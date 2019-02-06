@@ -1,0 +1,8 @@
+spring:
+  cassandra:
+    keyspace-name: test_service
+    host: 10.0.2.15
+    port: 9042
+    
+item:
+  name: book
