@@ -19,6 +19,10 @@ import com.datastax.driver.mapping.Result;
 @Repository
 public class ExampleMappingRepository {
 
+	public ExampleMappingRepository(MappingManager mappingManager) {
+		this.mappingManager = mappingManager;
+	}
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExampleServiceImpl.class);
 	
 	@Value ("${spring.cassandra.keyspace-name}")

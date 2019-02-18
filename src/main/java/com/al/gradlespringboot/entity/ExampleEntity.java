@@ -8,13 +8,13 @@ import com.datastax.driver.mapping.annotations.Table;
 @Table (name = Constants.CASSANDRA_TABLE)
 public class ExampleEntity {
 	@PartitionKey
-	@Column
+	@Column(name = "id")
 	private int number;
 	
-	@Column
+	@Column(name = "item")
 	private String item;
 	
-	@Column
+	@Column(name = "price")
 	private float price;
 
 	public int getNumber() {
