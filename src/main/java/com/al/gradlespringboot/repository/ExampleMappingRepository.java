@@ -11,6 +11,8 @@ import com.al.gradlespringboot.service.ExampleServiceImpl;
 import com.al.gradlespringboot.util.Constants;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.Mapper.Option;
 import com.datastax.driver.mapping.MappingManager;
@@ -34,9 +36,10 @@ public class ExampleMappingRepository {
 	public Result<ExampleEntity> getAllData() {
 		Result<ExampleEntity> results = null;
 		ResultSet getData = null;
-		Mapper<ExampleEntity> mapper = mappingManager.mapper(ExampleEntity.class);	 
+		Mapper<ExampleEntity> mapper = mappingManager.mapper(ExampleEntity.class);	
+		Statement statement = QueryBuilder.select().all().from(Constants.CASSANDRA_KEYSPACE, Constants.CASSANDRA_TABLE);
 		try {
-			getData = mappingManager.getSession().execute(Constants.SELECT_CQL_TOKEN+ " * "+ Constants.FROM_CQL_TOKEN+keyspaceName+Constants.END_CQL_TOKEN);
+			getData = mappingManager.getSession().execute(statement);
 			results = mapper.map(getData);
 		} catch (Exception e) {
 			LOGGER.error("Error while retrieving data ", e);
@@ -46,8 +49,8 @@ public class ExampleMappingRepository {
 	}
 	
 	public void delete(String item) {
-		PreparedStatement statement = mappingManager.getSession().prepare("Delete from "+ Constants.CASSANDRA_KEYSPACE+"."+Constants.CASSANDRA_TABLE+ "where "+Constants.CASSANDRA_TABLE_COLUMN_ITEM+" = "+item);
-		mappingManager.getSession().execute(statement.bind());
+		Statement statement = QueryBuilder.delete().all().from(Constants.CASSANDRA_KEYSPACE, Constants.CASSANDRA_TABLE).where(QueryBuilder.eq(Constants.CASSANDRA_TABLE_COLUMN_ITEM, item));
+		mappingManager.getSession().execute(statement);
 	}
 	
 	public void save(ExampleEntity exampleEntity) {
